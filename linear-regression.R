@@ -23,3 +23,13 @@ cor(z$sat,z$gpa)
 # outliers
 # homogeniety of the group (sampling from a similar group)
 # sample size
+
+
+#Using plot and abline to find linear relationships
+library(SDSFoundations)
+bull <- BullRiders
+#try out various plots to fish for a relationship
+plot(bull$YearsPro, bull$BuckOuts14,xlab="Years Pro",ylab="Buckouts",main="Plot of Years Pro")
+abline(lm(bull$BuckOuts14~bull$YearsPro))  #weak
+plot(bull$Events14~bull$BuckOuts14,xlab="No of Events",ylab="Buckouts",main="Events vs Buckouts")
+abline(lm(bull$BuckOuts14~bull$Events14))  #strong relationship
