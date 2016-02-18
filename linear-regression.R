@@ -33,3 +33,11 @@ plot(bull$YearsPro, bull$BuckOuts14,xlab="Years Pro",ylab="Buckouts",main="Plot 
 abline(lm(bull$BuckOuts14~bull$YearsPro))  #weak
 plot(bull$Events14~bull$BuckOuts14,xlab="No of Events",ylab="Buckouts",main="Events vs Buckouts")
 abline(lm(bull$BuckOuts14~bull$Events14))  #strong relationship
+
+# show correlation and build a correlation matrix table
+cor(bull$YearsPro, bull$BuckOuts14)
+cor(bull$Events14, bull$BuckOuts14)
+# create a correlation matrix
+myvars <- c("YearsPro","Events14","BuckOuts14")
+cor(bull[,myvars])
+
