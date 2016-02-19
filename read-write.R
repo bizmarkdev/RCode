@@ -42,3 +42,19 @@ pollutantmean<-function(directory,id=1:332){
   #debug return(pollution_data)
 }
 #========================================================
+
+## data.table fast reading from disk
+#    create a big file
+#    place that file in temp directory
+#    /var/folders/f6/mqbr5p497nlcz5314nltm2340000gn/T/RtmphX6sbl
+big_df <- data.frame(x=rnorm(1E6),y=rnorm(1E6))
+tempdir()   #the temp directory for this session of R
+file <- tempfile()  #create a file in the tempdir
+write.table(big_df,file=file,row.names=FALSE, col.names=TRUE, sep="\t",quote=FALSE)
+#    read the file as a data frame. elapsed time is 0.298 seconds.
+system.time(fread(file))
+#    read the file as a data table. elapsed time is 6.470 seconds.
+system.time(read.table(file,header=TRUE,sep="\t"))
+#========================================================
+
+

@@ -67,3 +67,14 @@ data(mtcars)   # load the mtcars data frame
 ?boxplot
 boxplot(mpg ~ cyl,mtcars)
 hist(mtcars$mpg)
+
+## Getting and Cleaning Data course
+ls()
+rm(list=ls())
+install.packages("swirl")
+packageVersion("swirl")  #need 2.2.21 or later
+library("swirl")
+install_from_swirl("Getting and Cleaning Data")
+swirl()
+Mark
+
