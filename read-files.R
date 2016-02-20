@@ -1,6 +1,4 @@
 
-# Write R code for writing out objects
-dput(x,file="dumpfile.txt")
 
 #========================================================
 # Read all files in a directory into one dataframe
@@ -44,6 +42,7 @@ pollutantmean<-function(directory,id=1:332){
 #========================================================
 
 ## data.table fast reading from disk
+#  see profiling.R
 #    create a big file
 #    place that file in temp directory
 #    /var/folders/f6/mqbr5p497nlcz5314nltm2340000gn/T/RtmphX6sbl
@@ -57,13 +56,11 @@ system.time(fread(file))
 system.time(read.table(file,header=TRUE,sep="\t"))
 #========================================================
 
-# Read an XML file
-library(XML)
-fileURL <- "https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2Frestaurants.xml"
-download.file(fileURL, destfile=tf <- tempfile(fileext=".xml"))
-doc <- xmlParse(tf)
-zip <- xpathSApply(doc, "/response/row/row/zipcode", xmlValue)
-sum(zip == "21231")
+
+
+##===============
+## CSV
+##===============
 
 ## Download a CSV file from the web
 #      curl method needed if https and called from a mac
@@ -85,16 +82,7 @@ dim(acs)
 acs <- acs[c("VAL","FES")]
 # acs <- subset(acs, select = c("VAL","FES"))
 
-## Download a Excel file from the web
-#      curl method needed if https and called from a mac
-fileUrl <- "https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2FDATA.gov_NGAP.xlsx"
-download.file(fileUrl, destfile="natural-gas-aquisition.xlsx",method="curl")
-# inspect the file with Excel
-library(xlsx)
-dat <- read.xlsx("natural-gas-aquisition.xlsx",sheetIndex=1,rowIndex=c(18:23),colIndex=c(7:15),header=TRUE)
-head(nga)
-dim(nga)
-sum(dat$Zip*dat$Ext,na.rm=T)
+
 
 ## Download a CSV file from the web
 #    get the URL for scripting a download:
@@ -114,6 +102,23 @@ dateDownloaded
 cameraData <- read.table("./data/cameras.csv", sep=",", header = TRUE)
 cameraData <- read.csv("./data/cameras.csv")
 head(cameraData)
+
+
+
+##===============
+## EXCEL
+##===============
+
+## Download a Excel file from the web
+#      curl method needed if https and called from a mac
+fileUrl <- "https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2FDATA.gov_NGAP.xlsx"
+download.file(fileUrl, destfile="natural-gas-aquisition.xlsx",method="curl")
+# inspect the file with Excel
+library(xlsx)
+dat <- read.xlsx("natural-gas-aquisition.xlsx",sheetIndex=1,rowIndex=c(18:23),colIndex=c(7:15),header=TRUE)
+head(nga)
+dim(nga)
+sum(dat$Zip*dat$Ext,na.rm=T)
 
 ## Download an Excel file from the web
 #    requires xlsx package. xlsx package requires legacy Java 6 runtime for OS X
@@ -141,10 +146,24 @@ cameraData <- read.xlsx("./data/cameras.xlsx",sheetIndex=1,colIndex=colIndex,row
 #     XLConnect package has more options. Use for complex cases
 #     write.xlsx to write out
 
+
+
+##===============
+## XML
+##===============
+
+# Read an XML file
+library(XML)
+fileURL <- "https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2Frestaurants.xml"
+download.file(fileURL, destfile=tf <- tempfile(fileext=".xml"))
+doc <- xmlParse(tf)
+zip <- xpathSApply(doc, "/response/row/row/zipcode", xmlValue)
+sum(zip == "21231")
+
 ## Reading XML files
-#    requires XML package
 library(XML)
 fileUrl <- "http://www.w3schools.com/xml/simple.xml"
+# xmlTreeParse may return "XML is not an XML file". Use download.file instead.
 doc <- xmlTreeParse(fileUrl,useInternal=TRUE)
 rootNode <- xmlRoot(doc)
 rootNode
@@ -168,6 +187,12 @@ fileUrl <- "http://espn.go.com/nfl/team/_/name/bal/baltimore-ravens"
 doc <- htmlTreeParse(fileUrl,useInternal=TRUE)
 scores <- xpathSApply(doc,"//div[@class='score']",xmlValue)
 teams <- xpathSApply(doc,"//div[@class='game-info']",xmlValue)
+
+
+
+##===============
+## JSON
+##===============
 
 ## JSON
 #    http://www.r-bloggers.com/new-package-jsonlite-a-smarter-json-encoderdecoder/
