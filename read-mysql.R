@@ -1,5 +1,7 @@
 ## Read mySQL
 
+# google "mySQL R package"
+
 # http://biostat.mc.vanderbilt.edu/wiki/Main/RMySQL
 install.packages("RMySQL")
 library(RMySQL)

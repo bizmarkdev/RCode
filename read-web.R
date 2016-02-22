@@ -2,6 +2,7 @@
 
 # http://www.theatlantic.com/technology/archive/2014/01/how-netflix-reverse-engineered-hollywood/282679/
 # http://www.r-bloggers.com/?s=Web+Scraping
+# https://cran.r-project.org/web/views/WebTechnologies.html
 
 # Getting data off webpages - readLines()
 con = url("https://scholar.google.com/citations?user=HI-I6C0AAAAJ&hl=en")
