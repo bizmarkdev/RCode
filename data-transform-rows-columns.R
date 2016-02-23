@@ -2,10 +2,12 @@
 
 # lapply returns a list
 x <- list(a=1:4,b=rnorm(10), c=rnorm(20,1), d=rnorm(100,5))
-lapply(x,mean)
+x
+x <- lapply(x,mean)
 
 # sapply returns a vector
 x <- list(a=1:4,b=rnorm(10), c=rnorm(20,1), d=rnorm(100,5))
+x
 sapply(x,mean)
 
 # lapply often has anonymous functions
