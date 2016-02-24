@@ -1,4 +1,5 @@
 # Add/Remove rows and columns
+# http://www.statmethods.net/management/merging.html
 
 set.seed(13435)
 x <- data.frame("var1"=sample(1:5),"var2"=sample(6:10),"var3"=sample(11:15))
@@ -52,3 +53,47 @@ table(restData2$zipGroups2)
 s1 <- seq(1,10,by=2); s1
 s2 <- seq(1,10,length=3); s2
 x <- c(1,3,8,25,100); seq(along = x)
+
+###############################################################
+# Merging data lecture
+
+# merging data
+
+# http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0026895
+
+if(!file.exists("./data")){dir.create("./data")}
+fileUrl1 = "https://dl.dropboxusercontent.com/u/7710864/data/reviews-apr29.csv"
+fileUrl2 = "https://dl.dropboxusercontent.com/u/7710864/data/solutions-apr29.csv"
+download.file(fileUrl1,destfile="./data/reviews.csv",method="curl")
+download.file(fileUrl2,destfile="./data/solutions.csv",method="curl")
+reviews = read.csv("./data/reviews.csv"); 
+solutions <- read.csv("./data/solutions.csv")
+head(reviews)
+head(solutions)
+
+names(reviews)
+names(solutions)
+# default is to merge by all variables with the same name
+# by statements override the default
+# all=TRUE directs to include rows with missing values, giving the columns NA
+mergedData = merge(reviews,solutions,by.x="solution_id",by.y="id",all=TRUE)
+head(mergedData)
+names(mergedData)
+
+# default is to merge by all variables with the same name
+intersect(names(solutions),names(reviews))
+
+# using join in the plyr package
+# faster than merge, but only can merge on common variable names
+# join(x, y, by = NULL, type = "left", match = "all")
+df1 = data.frame(id=sample(1:10),x=rnorm(10))
+df2 = data.frame(id=sample(1:10),y=rnorm(10))
+arrange(join(df1,df2),id)
+
+# join_all works well with multiple data frames
+df1 = data.frame(id=sample(1:10),x=rnorm(10))
+df2 = data.frame(id=sample(1:10),y=rnorm(10))
+df3 = data.frame(id=sample(1:10),z=rnorm(10))
+dfList = list(df1,df2,df3)
+join_all(dfList)
+

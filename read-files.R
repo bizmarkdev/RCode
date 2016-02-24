@@ -62,6 +62,30 @@ system.time(read.table(file,header=TRUE,sep="\t"))
 ## CSV
 ##===============
 
+url.csv <- "https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2Fss06hid.csv"
+f.csv <- file.path(getwd(), "american-community-survey.csv")
+download.file(url.csv, f.csv)
+url.pdf <- "https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2FPUMSDataDict06.pdf"
+f.pdf <- file.path(getwd(), "american-community-survey.pdf")
+download.file(url.pdf, f.pdf)
+dt <- data.table(read.csv(f.csv))
+
+#install.packages("data.table")
+library(data.table)
+# download each file and clean it up as much as possible
+url <- "https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2FGDP.csv"
+f <- file.path(getwd(), "getdata-data-GDP.csv")
+download.file(url, f)
+dtGDP <- data.table(read.csv(f))
+# inspect data. note first 4 rows are headers and the last country is at row 219 (219-4=215)
+dtGDP <- data.table(read.csv(f, skip = 4, nrows = 215))
+# remove rows with blank country
+dtGDP <- dtGDP[X != ""]
+# remove unneeded columns
+dtGDP <- dtGDP[, list(X, X.1, X.3, X.4)]
+# give meaningful variable names
+setnames(dtGDP, c("X", "X.1", "X.3", "X.4"), c("CountryCode", "rankingGDP", "Long.Name", "gdp"))
+
 ## Download a CSV file from the web
 #      curl method needed if https and called from a mac
 fileUrl <- "https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2Fss06hid.csv"
@@ -208,4 +232,17 @@ cat(myjson)
 iris2 <- fromJSON(myjson) #convert into a dataframe
 head(iris2)
 
+##===============
+## RDS
+##===============
+chicago <- readRDS("chicago.rds")
 
+##===============
+## JPG
+##===============
+url.jpg <- "https://d396qusza40orc.cloudfront.net/getdata%2Fjeff.jpg"
+file.jpg <- file.path(getwd(), "jeff.jpg")
+download.file(url.jpg, file.jpg, mode = "wb")
+img <- readJPEG(file.jpg, native = TRUE)
+quantile(img, probs = 0.30)
+quantile(img, probs = 0.80)

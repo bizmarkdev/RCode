@@ -1,29 +1,14 @@
-# Cleaning data
+# Cleaning data. The goal is tidy data:
+#   Each variable forms a column
+#   Each observation forms a row
+#   Each table/file stores data about one kind of observation
+# read Hadley's paper: http://vita.had.co.nz/papers/tidy-data.pdf
 
-# Clean data and compute mean
-if (pollutant == 'sulfate') {
-  pollution_data <- pollution_data[complete.cases(pollution_data[,2]),]
-  pollution_mean <- mean(pollution_data$sulfate)
-} else if (pollutant == 'nitrate') {
-  pollution_data <- pollution_data[complete.cases(pollution_data[,3]),]
-  pollution_mean <- mean(pollution_data$nitrate)
-} else {
-  pollution_data <- pollution_data[complete.cases(pollution_data),]
-  pollution_mean <- "select either sulfate or nitrate"
-}
 
-# remove NA values
-x<-c(1,2,NA,4,NA,5)
-x
-bad<-is.na(x)
-bad
-x[!bad]
+################################################################################################
 
-x<-c(1,2,NA,4,NA,5)
-y<-c("a","b",NA,"d",NA,"f")
-good<-complete.cases(x,y)
-x[good]
-y[good]
+# Hadley's tidyr
+# http://blog.rstudio.org/2014/07/22/introducing-tidyr/
 
 ## Swirll: Getting and Cleaning Data course
 ls()
@@ -33,18 +18,22 @@ packageVersion("swirl")  #need 2.2.21 or later
 install_from_swirl("Getting and Cleaning Data")
 library("swirl")
 swirl()
+
 # Lesson 3: Tidying Data with tidyr
 library(tidyr)
-# read Hadley's paper: http://vita.had.co.nz/papers/tidy-data.pdf
 
 # The first problem is when you have column headers that are values, not variable names.
-#> students
+#> students  (male and female are values, not variables. They should be collapsed)
 #grade male female
 #1     A    1      5
 #2     B    5      0
 #3     C    5      2
 #4     D    5      5
 #5     E    7      4
+
+# gather() takes multiple columns, and gathers them into key-value pairs: it makes “wide” data longer. 
+# Other names for gather include melt (reshape2), pivot (spreadsheets) and fold (databases).
+
 ?gather
 gather(students,sex,count,-grade)
 #grade    sex count
@@ -193,3 +182,159 @@ sat %>%
   gather(part_sex, count, -score_range) %>%
   separate(part_sex, c("part", "sex")) %>%
   print
+
+#########################################################################################
+
+# Melting data frames. Collapse dataframe columns.
+mtcars
+nrow(mtcars)  #32 rows
+# mtcars has mpg and hp variables. Want to collapse them into one variable called "variable"
+# So each carname will now have two rows. Go from wide to narrower dataset.
+mtcars$carname <- rownames(mtcars)
+mtcars
+library(reshape2)
+carMelt <- melt(mtcars,id=c("carname","gear","cyl"),measure.vars=c("mpg","hp"))
+carMelt # now two rows for each carname
+nrow(carMelt)  #64 rows
+
+# Cast data frame (dcast, acast)
+# recast the data, placing cylinders in rows and count of variable values in columns:
+cylData <- dcast(carMelt, cyl ~ variable)
+# says for 4 cylinders we have 11 measures of mpg and 11 measures of hp:
+cylData
+# recast the data, placing cylinders in rows and means of variable values in columns:
+cylData <- dcast(carMelt, cyl ~ variable,mean)
+# says for 4 cylinders we have mean mpg of 26.66 and mean hp of 82.64
+cylData
+
+###########################################################################
+# Summing values
+
+# Summing values using tapply
+head(InsectSprays)
+# tapply(X, INDEX, FUN = NULL, ..., simplify = TRUE)
+# within the index of spray (INDEX), sum up (FUN) the count (X)
+tapply(InsectSprays$count,InsectSprays$spray,sum)
+
+# Summing values using split, apply, combine
+# Hadley Wickham (2011). The Split-Apply-Combine Strategy for Data Analysis. 
+# Journal of Statistical Software, 40(1), 1-29. http://www.jstatsoft.org/v40/i01/.
+# http://www.r-bloggers.com/a-quick-primer-on-split-apply-combine-problems/
+# split divides the data in the vector x into the groups defined by f
+# split(x, f, drop = FALSE, ...)
+spIns = split(InsectSprays$count,InsectSprays$spray)
+# returns a list
+spIns
+# lapply returns a list of the same length as X, 
+# each element of which is the result of applying FUN to the corresponding element of X.
+# lapply(X, FUN, ...)
+sprCount = lapply(spIns,sum)
+sprCount
+# Convert the list to a vector
+# Given a list structure x, unlist simplifies it to produce a vector 
+# which contains all the atomic components which occur in x.
+# unlist(x, recursive = TRUE, use.names = TRUE)
+unlist(sprCount)
+# a shortcut that follows the above:
+sapply(spIns,sum)
+
+# Summing values using plyer
+# Split data frame, apply function, and return results in a data frame.
+# ddply(.data, .variables, .fun = NULL, ...,
+library(plyr)
+ddply(InsectSprays,.(spray),summarize,sum=sum(count))
+
+# using same ddply to create a new variable 
+spraySums <- ddply(InsectSprays,.(spray),summarize,sum=ave(count,FUN=sum))
+# this variable can now be used to add to a dataset
+head(spraySums)
+
+####################################################################################
+# Managing data frames with dplyr
+# Assumptions:
+#    There is one observation per row
+#    Each column represens a variable or measure or characteristic
+# may be used with data frame backends, such as data.table and SQL interface via DBI package
+#
+# key verbs: 
+#    select: return a subset of columns of a data frame
+#    filter: extract a subset of rows based on logical conditions
+#    arrange: reorder rows
+#    rename: rename variables
+#    mutate: add new variables/columns or transform existing variables
+#    summarise/summarize: generate summary statistics of differerent variables
+#       possibly within strata
+#
+# Properties:
+#    first argument is always a data frame
+#    subsequent arguments describe what to do with it
+#    you can refer to columns directly without using the $ operator
+#    result is always a new data frame
+#    data frames must be properly formatted
+#    
+#
+
+# warning messages when loading dplyr package are okay
+library(dplyr)
+packageVersion("dplyr")
+browseVignettes(package = "dplyr")
+
+chicago <- readRDS("chicago.rds")
+dim(chicago)
+str(chicago)
+names(chicago)
+
+# select
+head(chicago)
+head(select(chicago,city:dptp))
+head(select(chicago,-(city:dptp)))
+
+# to do this in R, must use index:
+i <- match("city", names(chicago))
+j <- match("dptp", names(chicago))
+head(chicago[,-(i:j)])
+
+# filter
+chic.f <- filter(chicago, pm25tmean2 > 30)
+head(chic.f)
+chic.f <- filter(chicago, pm25tmean2 > 30 & tmpd > 80)
+head(chic.f)
+
+# arrange
+chicago <- arrange(chicago, date)
+head(chicago,10)
+chicago <- arrange(chicago, desc(date))
+head(chicago,10)
+
+# rename
+chicago <- rename(chicago, pm25 = pm25tmean2, dewpoint = dptp)
+head(chicago)
+
+# mutate
+chicago <- mutate(chicago, pm25detrend = pm25 - mean(pm25, na.rm = TRUE))
+head(select(chicago, pm25, pm25detrend))
+
+# group_by
+# The function factor is used to encode a vector as a factor
+# add a new column with the content generated by factor. Values will be "cold" or "hot"
+chicago <- mutate(chicago, tempcat = factor(1 *(tmpd >80), labels = c("cold", "hot")))
+hotcold <- group_by(chicago,tempcat)
+hotcold
+
+# summarise/summarize
+summarize(hotcold, pm25 = mean(pm25), o3 = max(o3tmean2), no2 = median(no2tmean2))
+summarize(hotcold, pm25 = mean(pm25, na.rm = TRUE), o3 = max(o3tmean2), no2 = median(no2tmean2))
+
+chicago <- mutate(chicago, year = as.POSIXlt(date)$year + 1900)
+years <- group_by(chicago, year)
+summarize(years, pm25 = mean(pm25, na.rm = TRUE), o3 = max(o3tmean2), no2 = median(no2tmean2))
+
+
+# special %>% operator
+chicago %>% mutate(month = as.POSIXlt(date)$mon+1) %>% group_by(month) %>% summarize(pm25 = mean(pm25, na.rm = TRUE), o3 = max(o3tmean2), no2 = median(no2tmean2))
+# better format:
+chicago %>% 
+  mutate(month = as.POSIXlt(date)$mon+1) %>% 
+  group_by(month) %>% 
+  summarize(pm25 = mean(pm25, na.rm = TRUE), o3 = max(o3tmean2), no2 = median(no2tmean2))
+                     
