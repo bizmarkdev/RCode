@@ -35,3 +35,28 @@ paste0("Mark","Hicks")    #[1] "MarkHicks"
 #
 str_trim("Mark    ")      #[1] "Mark"
 
+####################################################################################
+# Regular Expressions in R
+
+# Metacharacters: Start/End of a line:
+#   ^i think                  ^: Start of a line
+#   morning$                  $: End of a line
+#   9.11                      .: Any character. Any 9, any char, any 11
+#   flood|fire                |: Either/or
+#   ^([Gg]ood|[Bb]ad)         |: Good or Bad at beginning of line
+#   [Gg]eo( [Ww]\.)? [Bb]ush  ?: Optional. Geo Bush or Geo W. Bush. 
+#   (.*)                      *: repetition: zero or more chars inside ()
+#   [0-9]+                    +: repetition: at least one number.
+#   Bush() +[^ ]+ +){1,5} de  {}: repetition: 1 to 5 times: Bush space, not a space, space, debate
+#                             {}: m,n at least but not more; m exactly; m, at least
+#    +([a-zA-Z]+) +\1 +       \1: repetition. Match last matched phrase. " So So" or " blah blah"
+#   ^s(.*)s                   * is greedy. Will match all of "sitting at starbucks"
+#   ^s(.*?)s$                 *? not greedy.
+#   
+# Character class:
+#   [Bb] [Uu] [Ss] [Hh]   Character classes match anywhere will match
+#   ^[Ii]                 Uppper or lower "i" at start of line
+#   ^[0-9][a-zA-Z]        Start of line, any number, followed by any letter
+#   [^?.]$                ^ in class negates: at end of line, any char other than ? or .
+
+####################################################################################

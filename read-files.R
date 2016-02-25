@@ -69,14 +69,6 @@ system.time(read.table(file,header=TRUE,sep="\t"))
 ## CSV
 ##===============
 
-url.csv <- "https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2Fss06hid.csv"
-f.csv <- file.path(getwd(), "american-community-survey.csv")
-download.file(url.csv, f.csv)
-url.pdf <- "https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2FPUMSDataDict06.pdf"
-f.pdf <- file.path(getwd(), "american-community-survey.pdf")
-download.file(url.pdf, f.pdf)
-dt <- data.table(read.csv(f.csv))
-
 #install.packages("data.table")
 library(data.table)
 # download each file and clean it up as much as possible
@@ -94,13 +86,16 @@ dtGDP <- dtGDP[, list(X, X.1, X.3, X.4)]
 setnames(dtGDP, c("X", "X.1", "X.3", "X.4"), c("CountryCode", "rankingGDP", "Long.Name", "gdp"))
 
 ## Download a CSV file from the web
-#      curl method needed if https and called from a mac
-fileUrl <- "https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2Fss06hid.csv"
-download.file(fileUrl, destfile="american-community-survey.csv",method="curl")
-fileUrl <- "https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2FPUMSDataDict06.pdf"
-download.file(fileUrl, destfile="american-community-survey.pdf",method="curl")
-dateDownloaded <- date()
-dateDownloaded
+#    curl method needed if https and called from a mac
+#    read.table(), read.csv(), read.csv2()
+#    important parameters: quote, na.strings, nrows, skip. 
+url.csv <- "https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2Fss06hid.csv"
+f.csv <- file.path(getwd(), "american-community-survey.csv")
+download.file(url.csv, f.csv)
+url.pdf <- "https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2FPUMSDataDict06.pdf"
+f.pdf <- file.path(getwd(), "american-community-survey.pdf")
+download.file(url.pdf, f.pdf)
+dt <- data.table(read.csv(f.csv))
 
 ## Reading local files
 #    read.table(), read.csv(), read.csv2()
