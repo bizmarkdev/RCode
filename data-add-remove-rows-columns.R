@@ -97,3 +97,36 @@ df3 = data.frame(id=sample(1:10),z=rnorm(10))
 dfList = list(df1,df2,df3)
 join_all(dfList)
 
+#####################################################
+# From Week3 quiz, Cleaning Data
+#3
+#install.packages("data.table")
+library(data.table)
+# download each file and clean it up as much as possible
+url <- "https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2FGDP.csv"
+f <- file.path(getwd(), "getdata-data-GDP.csv")
+download.file(url, f)
+dtGDP <- data.table(read.csv(f))
+# inspect data. note first 4 rows are headers and the last country is at row 219 (219-4=215)
+dtGDP <- data.table(read.csv(f, skip = 4, nrows = 215))
+# remove rows with blank country
+dtGDP <- dtGDP[X != ""]
+# remove unneeded columns
+dtGDP <- dtGDP[, list(X, X.1, X.3, X.4)]
+# give meaningful variable names
+setnames(dtGDP, c("X", "X.1", "X.3", "X.4"), c("CountryCode", "rankingGDP", "Long.Name", "gdp"))
+
+url <- "https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2FEDSTATS_Country.csv"
+f <- file.path(getwd(), "getdata-data-EDSTATS_Country.csv")
+download.file(url, f)
+dtEd <- data.table(read.csv(f))
+# inspect data. 
+
+dt <- merge(dtGDP, dtEd, all = TRUE, by = c("CountryCode"))
+# how many of the IDs match?
+sum(!is.na(unique(dt$rankingGDP)))    #[1] 189
+# Sort the data frame in descending order by GDP rank (so United States is last).
+# What is the 13th country in the resulting data frame?
+dt[order(rankingGDP, decreasing = TRUE), list(CountryCode, Long.Name.x, Long.Name.y, rankingGDP, gdp)][13]
+###########################################################################
+

@@ -1,4 +1,11 @@
-
+# Important points about text in data set columns and content
+#   All lower case when possible
+#   Descriptive terms
+#   Not duplicated
+#   Not have underscores or dots or white spaces
+# Variables with character values:
+#   Should usually be made into factor variables
+#   Should be descriptive (use TRUE/FALSE instead of 0/1)
 
 #========================================================
 # Read all files in a directory into one dataframe
@@ -127,7 +134,33 @@ cameraData <- read.table("./data/cameras.csv", sep=",", header = TRUE)
 cameraData <- read.csv("./data/cameras.csv")
 head(cameraData)
 
+# set column names to all lowercase
+# setnames(x,old,new)
+setnames(cameraData, names(cameraData), tolower(names(cameraData)))
 
+# remove "." and following chars from column names
+splitNames = strsplit(names(cameraData), "\\.")
+firstElement <- function(x){x[1]}
+# sapply: Apply a Function over a List or Vector
+splitNames <- sapply(splitNames,firstElement)
+setnames(cameraData, names(cameraData), splitNames)
+names(cameraData)
+
+# test load data set:
+if(!file.exists("./data")){dir.create("./data")}
+fileUrl1 = "https://dl.dropboxusercontent.com/u/7710864/data/reviews-apr29.csv"
+fileUrl2 = "https://dl.dropboxusercontent.com/u/7710864/data/solutions-apr29.csv"
+download.file(fileUrl1,destfile="./data/reviews.csv",method="curl")
+download.file(fileUrl2,destfile="./data/solutions.csv",method="curl")
+reviews = read.csv("./data/reviews.csv"); 
+solutions <- read.csv("./data/solutions.csv")
+
+# remove "_" underscores from column names
+names(reviews)
+# sub, gsub: sub and gsub perform replacement of the first and all matches respectively.
+x <- sub("_","",names(reviews))
+setnames(reviews, names(reviews),x)
+names(reviews)
 
 ##===============
 ## EXCEL
