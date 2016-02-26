@@ -60,3 +60,10 @@ str_trim("Mark    ")      #[1] "Mark"
 #   [^?.]$                ^ in class negates: at end of line, any char other than ? or .
 
 ####################################################################################
+
+# Remove thousand separator from a column
+url.csv <- "https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2FGDP.csv"
+file.csv <- file.path(getwd(), "getdata-data-GDP.csv")
+download.file(url.csv, file.csv)
+gdp <- read.csv("getdata-data-GDP.csv",skip=4,nrows=190)
+gdp$X.4 <- as.numeric(gsub(",", "", as.character(gdp$X.4)))
