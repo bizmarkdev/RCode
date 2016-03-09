@@ -10,7 +10,7 @@
 # Hadley's tidyr
 # http://blog.rstudio.org/2014/07/22/introducing-tidyr/
 
-## Swirll: Getting and Cleaning Data course
+## Swirl: Getting and Cleaning Data course
 ls()
 rm(list=ls())
 install.packages("swirl")
