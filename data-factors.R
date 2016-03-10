@@ -1,4 +1,18 @@
-Factors
+# Factors
+
+# http://www.stat.berkeley.edu/~s133/factors.html
+data <- c(1,2,2,3,1,2,3,3,1,3,3)
+data[4]
+fdata = factor(data)
+fdata [4]
+rdata = factor(data,labels=c("I","II","III"))
+rdata[4]
+
+# Factors represent a very efficient way to store character values, 
+# because each unique character value is stored only once, 
+# and the data itself is stored as a vector of integers. 
+# Because of this, read.table will automatically convert character variables to factors 
+# unless the as.is= argument is specified. See Section  for details.
 
 # Factors: categorical data
 x<-factor(c("yes","yes","no","yes","no"))

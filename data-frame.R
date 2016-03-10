@@ -2,6 +2,12 @@
 
 # reading character data problem:
 # if character data, it is loaded as a factor instead of as character.
+#
+# Factors represent a very efficient way to store character values, 
+# because each unique character value is stored only once, 
+# and the data itself is stored as a vector of integers. 
+# Because of this, read.table will automatically convert character variables to factors 
+# unless the as.is= argument is specified. See Section  for details.
 options(stringsAsFactors = FALSE)
 state_rank_df = data.frame(hospital = character(),state = character(),stringsAsFactors = FALSE)
 
