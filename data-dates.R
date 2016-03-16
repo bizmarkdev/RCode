@@ -37,6 +37,7 @@ class(d3)    # [1] "POSIXct" "POSIXt"
 
 mdy("08/04/2013")
 dmy("27-06-1953")
+d4 = ymd("2016-03-14")
 ymd_hms("2011-08-03 10:15:03")
 ymd_hms("2011-08-03 10:15:03",tz="Pacific/Auckland")
 

@@ -15,3 +15,6 @@ search()
 install.packages("ggplot2")
 library(ggplot2)
 install.packages("KernSmooth")
+
+# Exploring packages:
+ls ("package:SDSFoundations")

@@ -1,4 +1,8 @@
-
+# convert numeric time "05, 10, 500" to 00:05, 00:10, 05:00"
+activity_interval_summary <- na.omit(activity)
+activity_interval_summary$time <- as.character(activity_interval_summary$interval)
+activity_interval_summary$time <- sub("([[:digit:]]{2,2})$", ":\\1", activity_interval_summary$time) 
+activity_interval_summary$time <- str_pad(activity_interval_summary$time,4,side=c("left"), "0")
 
 # typical load data set:
 if (!file.exists("data")){dir.create("data")}

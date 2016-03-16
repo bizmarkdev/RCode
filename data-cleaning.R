@@ -7,6 +7,14 @@
 
 ################################################################################################
 
+# reshape2, melt, cast
+#   http://seananderson.ca/2013/10/19/reshape.html
+
+sd.melt.health <- melt(sd_summary, id.vars="EVCAT", measure.vars=c("FATALITIES", "INJURIES"), variable.name = "IMPACT")
+
+
+################################################################################################
+
 # Hadley's tidyr
 # http://blog.rstudio.org/2014/07/22/introducing-tidyr/
 
@@ -273,6 +281,9 @@ head(spraySums)
 #    data frames must be properly formatted
 #    
 #
+
+# recommended tutorial:
+# http://www.dataschool.io/dplyr-tutorial-for-faster-data-manipulation-in-r/
 
 # warning messages when loading dplyr package are okay
 library(dplyr)

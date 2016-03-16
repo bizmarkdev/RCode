@@ -48,6 +48,14 @@ pollutantmean<-function(directory,id=1:332){
 }
 #========================================================
 
+temp <- tempfile()
+download.file("https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip",temp, mode="wb")
+unzip(temp, "activity.csv")
+unlink(temp)
+activity <- read.table("activity.csv", sep=",", header=T)
+
+#========================================================
+
 ## data.table fast reading from disk
 #  see profiling.R
 #    create a big file
@@ -68,6 +76,10 @@ system.time(read.table(file,header=TRUE,sep="\t"))
 ##===============
 ## CSV
 ##===============
+
+# Exploring large CSV files to determine header, separator, etc:
+#  head -n 10 myfile.csv > myfile.head.csv  (command line)
+#  then read the smaller file into R normally
 
 #install.packages("data.table")
 library(data.table)
@@ -274,3 +286,23 @@ download.file(url.jpg, file.jpg, mode = "wb")
 img <- readJPEG(file.jpg, native = TRUE)
 quantile(img, probs = 0.30)
 quantile(img, probs = 0.80)
+
+##===============
+## ZIP
+##===============
+temp <- tempfile()
+download.file("https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip",temp, mode="wb")
+unzip(temp, "activity.csv")
+unlink(temp)
+activity <- read.table("activity.csv", sep=",", header=T)
+
+
+##===============
+## bz2
+##===============
+temp <- tempfile()
+download.file("https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip",temp, mode="wb")
+unzip(temp, "activity.csv")
+unlink(temp)
+activity <- read.table("activity.csv", sep=",", header=T)
+

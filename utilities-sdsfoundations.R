@@ -112,3 +112,59 @@ tripleFit2 <- function (x, y, xlab = deparse(substitute(x)), ylab = deparse(subs
   fits <- list(linear = lin.r2, exponential = exp.r2, logistic = log.r2)
   return(invisible(fits))
 }
+
+
+# linFitPred is from:
+# SDSFoundations, a Collection of functions and data
+# for the University of Texas Department of Statistics MOOC: Foundations of Data Analysis
+linFitPred2 <- function (x, y, xval, xlab = deparse(substitute(x)), ylab = deparse(substitute(y))) 
+{
+  y1 <- as.numeric(y)
+  x1 <- as.numeric(x)
+  lin_model <- summary(lm(y1 ~ x1))
+  b0 <- lin_model$coef[1]
+  b1 <- lin_model$coef[2]
+  gx <- seq(min(x1, xval, na.rm = TRUE), max(c(x1, xval, na.rm = TRUE)), 
+            length = 100)
+  gfit <- b0 + (b1 * gx)
+  plot(x1, y1, main = "Linear", pch = 16, xlim = c(min(gx), 
+                                                   max(c(gx, xval))), ylim = c(min(gfit), max(c(y1, gfit), 
+                                                                                              na.rm = TRUE)), xlab = xlab, ylab = ylab)
+  lines(gx, gfit)
+  predy <- b0 + (b1 * xval)
+  points(xval, predy, pch = 16, col = "red")
+  mtext(paste("Predicted value: ", round(predy, 3), sep = ""), 
+        3)
+  pred.value <- round(predy, 2)
+  return(invisible(pred.value))
+}
+
+# expFitPred is from:
+# SDSFoundations, a Collection of functions and data
+# for the University of Texas Department of Statistics MOOC: Foundations of Data Analysis
+expFitPred2 <- function (x, y, xval, xlab = deparse(substitute(x)), ylab = deparse(substitute(y))) 
+{
+  y1 <- as.numeric(y)
+  x1 <- as.numeric(x)
+  y1[y1 == 0] <- 1e-09
+  ylog <- log(y1)
+  lin_model <- summary(lm(ylog ~ x1))
+  lin_int <- lin_model$coef[1]
+  lin_slope <- lin_model$coef[2]
+  a <- exp(lin_int)
+  b <- exp(lin_slope)
+  gx <- seq(min(x1, na.rm = TRUE), max(c(x1, xval)), length = 100)
+  gfit <- a * (b^gx)
+  plot(x1, y1, main = "Exponential", pch = 16, xlim = c(min(gx), 
+                                                        max(c(gx, xval))), ylim = c(min(gfit), max(c(y1, gfit), 
+                                                                                                   na.rm = TRUE)), xlab = xlab, ylab = ylab)
+  lines(gx, gfit)
+  predy <- a * (b^xval)
+  points(xval, predy, pch = 16, col = "red")
+  mtext(paste("Predicted value: ", round(predy, 3), sep = ""), 
+        3)
+  pred.value <- round(predy, 3)
+  return(invisible(pred.value))
+}
+
+ 
